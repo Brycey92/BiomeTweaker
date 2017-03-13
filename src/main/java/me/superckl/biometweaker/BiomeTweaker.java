@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -40,9 +41,11 @@ import me.superckl.biometweaker.server.command.CommandReload;
 import me.superckl.biometweaker.server.command.CommandReloadScript;
 import me.superckl.biometweaker.server.command.CommandSetBiome;
 import me.superckl.biometweaker.util.BiomeHelper;
-import me.superckl.biometweaker.util.DimensionHelper;
 import me.superckl.biometweaker.util.LogHelper;
-import net.minecraft.world.DimensionType;
+import me.superckl.biometweaker.util.EntityHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -236,7 +239,7 @@ public class BiomeTweaker {
 	}
 
 	public void generateOutputFiles() throws IOException{
-		LogHelper.info("Generating Biome status report...");
+		LogHelper.info("Generating biome status report...");
 		final JsonArray array = new JsonArray();
 		final Iterator<Biome> it = Biome.REGISTRY.iterator();
 		while(it.hasNext()){
@@ -249,10 +252,11 @@ public class BiomeTweaker {
 		final File baseDir = new File(BiomeTweakerCore.mcLocation, "/config/BiomeTweaker/output/");
 		final File biomeDir = new File(baseDir, "/biome/");
 		biomeDir.mkdirs();
+
 		for(final File file:biomeDir.listFiles())
 			if(file.getName().endsWith(".json"))
 				file.delete();
-		
+
 		if(Config.INSTANCE.isOutputSeperateFiles())
 			for(final JsonElement element:array){
 				final JsonObject obj = (JsonObject) element;
@@ -278,51 +282,45 @@ public class BiomeTweaker {
 			writer.newLine();
 			writer.write(gson.toJson(array));
 		}
-		
+
+		LogHelper.info("Generating LivingEntity status report...");
+
 		final File entityDir = new File(baseDir, "/entity/");
 		entityDir.mkdirs();
-		
+
 		for(final File file:entityDir.listFiles())
 			if(file.getName().endsWith(".json"))
 				file.delete();
-		
+
 		final JsonArray entityArray = new JsonArray();
-
-		LogHelper.info("Generating Dimension status report...");
-
-		final File dimDir = new File(baseDir, "/dimension/");
-		dimDir.mkdirs();
-
-		for(final File file:dimDir.listFiles())
-			if(file.getName().endsWith(".json"))
-				file.delete();
-
-		final DimensionType[] dimTypes = DimensionType.values();
-		final JsonArray dimArray = new JsonArray();
-
-		for(final DimensionType dimType:dimTypes)
-			dimArray.add(DimensionHelper.populateObject(dimType));
+		
+		final Map<Class<? extends Entity>, String> test = EntityList.CLASS_TO_NAME;
+		for(Class<? extends Entity> entityClass : test.keySet()){
+			if(!EntityLiving.class.isAssignableFrom(entityClass.getClass()))
+				continue;
+			entityArray.add(EntityHelper.populateObject(entityClass));
+		}
 
 		if(Config.INSTANCE.isOutputSeperateFiles())
-			for(final JsonElement ele:dimArray){
+			for(final JsonElement ele:entityArray){
 				final JsonObject obj = (JsonObject) ele;
-				final File dimOutput = new File(dimDir, obj.get("Name").getAsString().replaceAll("[^a-zA-Z0-9.-]", "_")+".json");
-				if(dimOutput.exists())
-					dimOutput.delete();
-				dimOutput.createNewFile();
+				final File entityOutput = new File(entityDir, obj.get("Name").getAsString().replaceAll("[^a-zA-Z0-9.-]", "_")+".json");
+				if(entityOutput.exists())
+					entityOutput.delete();
+				entityOutput.createNewFile();
 				@Cleanup
-				final BufferedWriter writer = new BufferedWriter(new FileWriter(dimOutput));
+				final BufferedWriter writer = new BufferedWriter(new FileWriter(entityOutput));
 				writer.newLine();
 				writer.write(gson.toJson(obj));
 			}
 		else{
 
-			final File dimOutput = new File(entityDir, "BiomeTweaker - Dimension Status Report.json");
-			if(dimOutput.exists())
-				dimOutput.delete();
-			dimOutput.createNewFile();
+			final File entityOutput = new File(entityDir, "BiomeTweaker - EntityLiving Status Report.json");
+			if(entityOutput.exists())
+				entityOutput.delete();
+			entityOutput.createNewFile();
 			@Cleanup
-			final BufferedWriter writer = new BufferedWriter(new FileWriter(dimOutput));
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(entityOutput));
 			writer.write("//Yeah, it's a doozy.");
 			writer.newLine();
 			writer.write(gson.toJson(entityArray));
