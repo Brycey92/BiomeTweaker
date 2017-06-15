@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import me.superckl.api.biometweaker.script.pack.IBiomePackage;
 import me.superckl.api.biometweaker.script.wrapper.BTParameterTypes;
 import me.superckl.api.biometweaker.util.SpawnListType;
+import me.superckl.api.biometweaker.world.gen.feature.WorldGeneratorBuilder;
 import me.superckl.api.superscript.command.IScriptCommand;
 import me.superckl.api.superscript.command.ScriptCommandListing;
 import me.superckl.api.superscript.object.ScriptObject;
@@ -19,6 +20,7 @@ import me.superckl.biometweaker.script.command.entity.ScriptCommandAddRemoveSpaw
 import me.superckl.biometweaker.script.command.entity.ScriptCommandMaxSpawnPackSize;
 import me.superckl.biometweaker.script.command.entity.ScriptCommandRemoveAllSpawns;
 import me.superckl.biometweaker.script.command.generation.ScriptCommandAddActualFillerBlock;
+import me.superckl.biometweaker.script.command.generation.ScriptCommandAddDecoration;
 import me.superckl.biometweaker.script.command.generation.ScriptCommandAddDictionaryType;
 import me.superckl.biometweaker.script.command.generation.ScriptCommandAddRemoveBiome;
 import me.superckl.biometweaker.script.command.generation.ScriptCommandAddRemoveBiomeFlower;
@@ -34,7 +36,7 @@ import me.superckl.biometweaker.script.command.generation.ScriptCommandRemoveFea
 import me.superckl.biometweaker.script.command.misc.ScriptCommandDisableBonemealUse;
 import me.superckl.biometweaker.script.command.misc.ScriptCommandInheritProperties;
 import me.superckl.biometweaker.script.command.misc.ScriptCommandSetBiomeProperty;
-import me.superckl.biometweaker.script.command.misc.ScriptCommandSetReplacementStage;
+import me.superckl.biometweaker.script.command.misc.ScriptCommandSetPlacementStage;
 import me.superckl.biometweaker.script.command.misc.ScriptCommandSetScriptStage;
 import me.superckl.biometweaker.script.command.misc.ScriptCommandSetWorld;
 
@@ -87,8 +89,8 @@ public class TweakerScriptObject extends ScriptObject{
 		validCommands.put("setScriptStage", listing);
 
 		listing = new ScriptCommandListing();
-		listing.addEntry(Lists.newArrayList(ParameterTypes.STRING.getSimpleWrapper()), ScriptCommandSetReplacementStage.class.getDeclaredConstructor(String.class));
-		validCommands.put("setReplacementStage", listing);
+		listing.addEntry(Lists.newArrayList(ParameterTypes.STRING.getSimpleWrapper()), ScriptCommandSetPlacementStage.class.getDeclaredConstructor(String.class));
+		validCommands.put("setPlacementStage", listing);
 
 		listing = new ScriptCommandListing();
 		listing.addEntry(Lists.newArrayList(ParameterTypes.INTEGER.getSimpleWrapper()), ScriptCommandSetWorld.class.getDeclaredConstructor(Integer.class));
@@ -191,6 +193,11 @@ public class TweakerScriptObject extends ScriptObject{
 		listing.addEntry(Lists.newArrayList(BTParameterTypes.BASIC_BIOMES_PACKAGE.getSimpleWrapper(), BTParameterTypes.BASIC_BIOMES_PACKAGE.getSimpleWrapper())
 				, ScriptCommandInheritProperties.class.getDeclaredConstructor(IBiomePackage.class, IBiomePackage.class));
 		validCommands.put("inheritProperties", listing);
+
+		listing = new ScriptCommandListing();
+		listing.addEntry(Lists.newArrayList(BTParameterTypes.BASIC_BIOMES_PACKAGE.getSimpleWrapper(), BTParameterTypes.WORLD_GENERATOR_BUILDER.getSimpleWrapper())
+				, ScriptCommandAddDecoration.class.getDeclaredConstructor(IBiomePackage.class, WorldGeneratorBuilder.class));
+		validCommands.put("addDecoration", listing);
 
 		return validCommands;
 	}
