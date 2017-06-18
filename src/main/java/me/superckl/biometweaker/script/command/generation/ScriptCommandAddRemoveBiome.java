@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import me.superckl.api.biometweaker.event.BiomeTweakEvent;
 import me.superckl.api.biometweaker.script.pack.IBiomePackage;
 import me.superckl.api.superscript.command.IScriptCommand;
+import me.superckl.biometweaker.BiomeTweaker;
 import me.superckl.biometweaker.common.world.biome.BiomeTweakerBiome;
-import me.superckl.biometweaker.config.Config;
 import me.superckl.biometweaker.util.LogHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.BiomeProperties;
@@ -47,7 +47,7 @@ public class ScriptCommandAddRemoveBiome implements IScriptCommand{
 								if(BiomeManager.getBiomes(type).isEmpty())
 									LogHelper.warn("Viable generation biomes for type "+type+" is empty! This will cause Vanilla generation to crash! You've been warned!");
 							}
-				Config.INSTANCE.onTweak(Biome.getIdForBiome(gen));
+				BiomeTweaker.getInstance().onTweak(Biome.getIdForBiome(gen));
 			}
 		} else
 			for(final int i:this.pack.getRawIds()){
@@ -56,7 +56,7 @@ public class ScriptCommandAddRemoveBiome implements IScriptCommand{
 					BiomeManager.addBiome(BiomeType.getType(this.type), new BiomeEntry(biome, this.weight));
 					Biome.registerBiome(i, "bt_custom_biome_"+i, biome);
 				}
-				Config.INSTANCE.onTweak(i);
+				BiomeTweaker.getInstance().onTweak(i);
 			}
 	}
 
