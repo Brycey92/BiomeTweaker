@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import me.superckl.api.biometweaker.property.BiomePropertyManager;
+import me.superckl.api.superscript.util.WarningHelper;
 import me.superckl.biometweaker.BiomeTweaker;
 import me.superckl.biometweaker.integration.IntegrationManager;
 import net.minecraft.block.Block;
@@ -24,10 +25,6 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.terraingen.BiomeEvent.GetFoliageColor;
-import net.minecraftforge.event.terraingen.BiomeEvent.GetGrassColor;
-import net.minecraftforge.event.terraingen.BiomeEvent.GetWaterColor;
 
 public class BiomeHelper {
 
@@ -209,7 +206,7 @@ public class BiomeHelper {
 		BiomeHelper.checkFields();
 		if(gen == null)
 			return;
-		final List<Biome>[] listArray = (List<Biome>[]) BiomeHelper.typeInfoList.get(null);
+		final List<Biome>[] listArray = WarningHelper.uncheckedCast(BiomeHelper.typeInfoList.get(null));
 		if(listArray.length > type.ordinal()){
 			List<Biome> list = listArray[type.ordinal()];
 			if(list == null){
@@ -222,13 +219,13 @@ public class BiomeHelper {
 				list.add(gen);
 		}
 		//Okay, here we go. REFLECTION OVERLOAD!!!1! (It's really not that bad.)
-		final Map map = (Map) BiomeHelper.biomeInfoMap.get(null);
+		final Map<?, ?> map = WarningHelper.uncheckedCast(BiomeHelper.biomeInfoMap.get(null));
 		final Object biomeInfo = map.get(Biome.REGISTRY.getNameForObject(gen));
 		if(BiomeHelper.typeList == null){
 			BiomeHelper.typeList = biomeInfo.getClass().getDeclaredField("typeList");
 			BiomeHelper.typeList.setAccessible(true);
 		}
-		final EnumSet<BiomeDictionary.Type> set = (EnumSet<Type>) BiomeHelper.typeList.get(biomeInfo);
+		final EnumSet<BiomeDictionary.Type> set = WarningHelper.uncheckedCast(BiomeHelper.typeList.get(biomeInfo));
 		if(remove)
 			set.remove(type);
 		else if(!set.contains(type))
@@ -245,8 +242,8 @@ public class BiomeHelper {
 			BiomeHelper.typeList = biomeInfo.getClass().getDeclaredField("typeList");
 			BiomeHelper.typeList.setAccessible(true);
 		}
-		final EnumSet<BiomeDictionary.Type> set = (EnumSet<Type>) BiomeHelper.typeList.get(biomeInfo);
-		final List<Biome>[] listArray = (List<Biome>[]) BiomeHelper.typeInfoList.get(null);
+		final EnumSet<BiomeDictionary.Type> set = WarningHelper.uncheckedCast(BiomeHelper.typeList.get(biomeInfo));
+		final List<Biome>[] listArray = WarningHelper.uncheckedCast(BiomeHelper.typeInfoList.get(null));
 		for(final BiomeDictionary.Type type : set)
 			listArray[type.ordinal()].remove(gen);
 		set.clear();

@@ -35,7 +35,7 @@ public class CommandReloadScript implements ICommand{
 	}
 
 	@Override
-	public List getCommandAliases() {
+	public List<String> getCommandAliases() {
 		return this.aliases;
 	}
 
