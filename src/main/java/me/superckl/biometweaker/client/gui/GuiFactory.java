@@ -20,7 +20,8 @@ public class GuiFactory implements IModGuiFactory{
 	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
 		return null;
 	}
-
+	
+	@SuppressWarnings("deprecation")
 	@Override
 	public RuntimeOptionGuiHandler getHandlerFor(final RuntimeOptionCategoryElement element) {
 		// TODO Auto-generated method stub
