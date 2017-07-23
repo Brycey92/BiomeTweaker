@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import me.superckl.api.biometweaker.event.BiomeTweakEvent;
 import me.superckl.api.biometweaker.script.AutoRegister;
-import me.superckl.api.biometweaker.script.pack.IBiomePackage;
-import me.superckl.api.superscript.command.IScriptCommand;
+import me.superckl.api.biometweaker.script.pack.BiomePackage;
+import me.superckl.api.superscript.script.command.ScriptCommand;
 import me.superckl.biometweaker.BiomeTweaker;
 import me.superckl.biometweaker.common.world.biome.BiomeTweakerBiome;
 import me.superckl.biometweaker.script.object.TweakerScriptObject;
@@ -21,20 +21,20 @@ import net.minecraftforge.common.MinecraftForge;
 
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ScriptCommandAddRemoveBiome implements IScriptCommand{
+public class ScriptCommandAddRemoveBiome extends ScriptCommand{
 
-	private final IBiomePackage pack;
+	private final BiomePackage pack;
 	private final boolean remove;
 	private final String type;
 	private final int weight;
 
 	@AutoRegister(classes = TweakerScriptObject.class, name = "removeBiome")
-	public ScriptCommandAddRemoveBiome(final IBiomePackage pack) {
+	public ScriptCommandAddRemoveBiome(final BiomePackage pack) {
 		this(pack, true, null, 0);
 	}
 
 	@AutoRegister(classes = TweakerScriptObject.class, name = "createBiome")
-	public ScriptCommandAddRemoveBiome(final IBiomePackage pack, final String type, final int weight) {
+	public ScriptCommandAddRemoveBiome(final BiomePackage pack, final String type, final int weight) {
 		this(pack, false, type, weight);
 	}
 
