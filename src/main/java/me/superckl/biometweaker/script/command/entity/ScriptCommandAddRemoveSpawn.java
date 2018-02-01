@@ -13,7 +13,6 @@ import me.superckl.biometweaker.config.Config;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,7 +40,8 @@ public class ScriptCommandAddRemoveSpawn implements IScriptCommand{
 		try{
 			clazz = (Class<? extends EntityLiving>) Class.forName(this.entityClass);
 		}catch(final Exception e){
-			final Class<? extends Entity> clazz2 = EntityList.getClass(new ResourceLocation(this.entityClass));
+			//final Class<? extends Entity> clazz2 = EntityList.getClass(new ResourceLocation(this.entityClass));
+			final Class<? extends Entity> clazz2 = EntityList.getClassFromID(EntityList.getIDFromString(entityClass));
 			if(clazz2 == null)
 				throw new IllegalArgumentException("Failed to load entity class: "+this.entityClass, e);
 			if(!EntityLiving.class.isAssignableFrom(clazz2))
@@ -59,6 +59,7 @@ public class ScriptCommandAddRemoveSpawn implements IScriptCommand{
 			this.handleTypeSwitch(gen, entry, clazz);
 			Config.INSTANCE.onTweak(Biome.getIdForBiome(gen));
 		}
+		//LogHelper.info("AAA: "+EntityList.getEntityStringFromClass(clazz));
 	}
 
 	private void handleTypeSwitch(final Biome gen, final SpawnListEntry entry, final Class<?> clazz){
