@@ -298,7 +298,8 @@ public class BiomeTweaker {
 		
 		final Map<Class<? extends Entity>, String> test = EntityList.CLASS_TO_NAME;
 		for(Class<? extends Entity> entityClass : test.keySet()){
-			if(!EntityLiving.class.isAssignableFrom(entityClass.getClass()))
+			String entityName = entityClass.getCanonicalName();
+			if(!EntityLiving.class.isAssignableFrom(entityClass) || entityName.equals("net.minecraft.entity.EntityLiving") || entityName.equals("net.minecraft.entity.monster.EntityMob"))
 				continue;
 			entityArray.add(EntityHelper.populateObject(entityClass));
 		}
@@ -306,7 +307,7 @@ public class BiomeTweaker {
 		if(Config.INSTANCE.isOutputSeperateFiles())
 			for(final JsonElement ele:entityArray){
 				final JsonObject obj = (JsonObject) ele;
-				final File entityOutput = new File(entityDir, obj.get("Name").getAsString().replaceAll("[^a-zA-Z0-9.-]", "_")+".json");
+				final File entityOutput = new File(entityDir, obj.get("Registry ID").getAsString().replaceAll("[^a-zA-Z0-9.-]", "_")+".json");
 				if(entityOutput.exists())
 					entityOutput.delete();
 				entityOutput.createNewFile();
