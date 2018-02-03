@@ -63,7 +63,6 @@ public class ScriptCommandAddRemoveSpawn implements IScriptCommand{
 			this.handleTypeSwitch(gen, entry, clazz);
 			BiomeTweaker.getInstance().onTweak(Biome.getIdForBiome(gen));
 		}
-		//LogHelper.info("AAA: "+EntityList.getEntityStringFromClass(clazz));
 	}
 
 	private void handleTypeSwitch(final Biome gen, final SpawnListEntry entry, final Class<?> clazz){
